@@ -6,49 +6,62 @@ from workout import create_app, db, models
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 
-# @app.shell_context_processor
-# def make_shell_context():
-#     return {
-#         'db': db,
-#         'Account': models.Account,
-#         'Customer': models.Customer,
-#         'Transaction': models.Transaction}
+@app.shell_context_processor
+def make_shell_context():
+    return {
+        'db': db,
+        'User': models.User,
+        'Workout': models.Workout,
+        'Section': models.Section,
+        'ExerciseLogEntry': models.ExerciseLogEntry,
+        'Exercise': models.Exercise,
+        'Variation': models.Variation,
+        'Equipment': models.Equipment,
+        'Category': models.Category
+    }
 
 
-# @app.cli.command('createdb')
-# @click.option('--test-data', type=bool, default=True, help="Initializes database with pre-loaded data")
-# def createdb(test_data):
-#     db.drop_all()
-#     db.create_all()
-#     if test_data:
-#         customer_data = [
-#             {'name': "Robin", 'surname': "Staunton-Collins"},
-#             {'name': "Matin", 'surname': "Abbasi"},
-#             {'name': "Rodrigo", 'surname': "Hammerly"},
-#             {'name': "Monty", 'surname': "Python"}
-#         ]
-#         account_data = [
-#             {'customer_id': 1, 'balance': 50, 'account_number': utils.generate_random_account_number()},
-#             {'customer_id': 1, 'balance': 40, 'account_number': utils.generate_random_account_number()},
-#             {'customer_id': 2, 'balance': 450, 'account_number': utils.generate_random_account_number()},
-#         ]
+@app.cli.command('createdb')
+@click.option('--test-data', type=bool, default=True, help="Initializes database with pre-loaded data")
+def createdb(test_data):
+    db.drop_all()
+    db.create_all()
+    if test_data:
+        users = [
+            {'username': "Robin", 'email': "robyo12121@gmail.com"},
+        ]
+        categories = [
+            {'name': 'Push'},
+        ]
 
-#         transaction_data = [
-#             {'account_id': 1, 'amount': 50},
-#             {'account_id': 2, 'amount': 40},
-#             {'account_id': 3, 'amount': 450},
-#         ]
+        equipment = [
+            {'name': 'Rings'},
+        ]
 
-#         customers = [models.Customer().import_data(c) for c in customer_data]
-#         db.session.add_all(customers)
+        variations = [
+            {'name': 'Unmodified', 'difficulty': 3},
+        ]
 
-#         accounts = [models.Account().import_data(a) for a in account_data]
-#         db.session.add_all(accounts)
+        exercises = [
+            {'name': 'Pullups'},
+        ]
 
-#         transactions = [models.Transaction().import_data(t) for t in transaction_data]
-#         db.session.add_all(transactions)
+        users = [models.User().import_data(u) for u in users]
+        db.session.add_all(users)
 
-#         db.session.commit()
+        categories = [models.Category().import_data(c) for c in categories]
+        db.session.add_all(categories)
+
+        equipment = [models.Equipment().import_data(e) for e in equipment]
+        db.session.add_all(equipment)
+
+        variations = [models.Variation().import_data(v) for v in variations]
+        db.session.add_all(variations)
+
+        exercises = [models.Exercise().import_data(e) for e in exercises]
+        db.session.add_all(exercises)
+
+        db.session.commit()
 
 
 if __name__ == '__main__':

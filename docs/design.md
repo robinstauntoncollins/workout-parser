@@ -16,15 +16,16 @@ The app will then be able to keep track of the day, exercises, sets, reps etc of
 # Database Schema Design
 User:
     id: INT
-    name: TEXT
+    username: TEXT
     email: TEXT
     password: TEXT
-    workouts: INT
+    workouts: INT; FK reference to workouts that have this user's Id
 
 Workout:
     id: INT
     sections: INT; Linked (one-to-many) to Section - each workout contains several sections
     date: DATE (UTC)
+    user_id: INT; Id of the user who logged this workout
 
     
 Section: (each section contains one or more exercise log entries)
@@ -32,15 +33,16 @@ Section: (each section contains one or more exercise log entries)
     name: text; eg. Warmup
     exercise_logs: int; Link (one-to-many) to Exercise log entries
     rest: int; eg. 90
+    workout_id: int; Id of the workout this section belongs to
 
     Eg. Warmup: arch hangs, squat reaches etc, rest 90s
     Eg2. Pair 1: ring pullups, beginner shrimp squat, rest 90s
     Eg3. Core: Ab wheel rollout, rest 90s
 
-Exercise Log: (for a single performance of a single exercise in a workout)
+Set: (for a single performance of a single exercise in a workout)
     id: INT
     exercise_id: INT - linked to a particular exercise
-    sets: INT - number of sets performed
+    set_number: INT - number of sets performed
     reps: INT - number of reps performed in each set
     weight: INT - amount of weight used for each rep
 
