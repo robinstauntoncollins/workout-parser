@@ -12,7 +12,7 @@ def make_shell_context():
         'db': db,
         'User': models.User,
         'Workout': models.Workout,
-        'Section': models.Section,
+        'WorkoutSection': models.WorkoutSection,
         'ExerciseLogEntry': models.ExerciseLogEntry,
         'Exercise': models.Exercise,
         'Variation': models.Variation,
@@ -32,18 +32,44 @@ def createdb(test_data):
         ]
         categories = [
             {'name': 'Push'},
+            {'name': 'Pull'},
+            {'name': 'Legs'},
         ]
 
         equipment = [
             {'name': 'Rings'},
+            {'name': 'Bar'},
+            {'name': 'Ab-wheel'},
+            {'name': 'Band'},
+            {'name': 'Barbell'},
         ]
 
         variations = [
-            {'name': 'Unmodified', 'difficulty': 3},
+            {'name': 'Unmodified', 'difficulty': 2},
+            {'name': 'Beginner', 'difficulty': 1},
+            {'name': 'Intermediate', 'difficulty': 2},
+            {'name': 'Advanced', 'difficulty': 3},
+            {'name': 'Assisted', 'difficulty': 1},
         ]
 
         exercises = [
             {'name': 'Pullups'},
+            {'name': 'Dips'},
+            {'name': 'Pushups'},
+            {'name': 'Nordic Curl'},
+            {'name': 'Deadlift'},
+            {'name': 'Squat'},
+            {'name': 'Support Holds'},
+            {'name': 'Shrimp Squat'},
+            {'name': 'Row'},
+            {'name': 'Rollouts'},
+            {'name': 'Arch Hangs'},
+        ]
+
+        workout_sections = [
+            {'name': 'Warmup'},
+            {'name': 'Strength'},
+            {'name': 'Core'},
         ]
 
         users = [models.User().import_data(u) for u in users]
@@ -60,6 +86,9 @@ def createdb(test_data):
 
         exercises = [models.Exercise().import_data(e) for e in exercises]
         db.session.add_all(exercises)
+
+        workout_sections = [models.WorkoutSection().import_data(ws) for ws in workout_sections]
+        db.session.add_all(workout_sections)
 
         db.session.commit()
 
