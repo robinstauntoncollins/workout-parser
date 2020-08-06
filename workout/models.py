@@ -55,7 +55,7 @@ class Section(db.Model):
     workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'))
 
     def __repr__(self):
-        return f"<Section {self.name} exercises: {self.exercises.all()} rest: {self.rest if self.rest is not None else 0}s"
+        return f"<Section {self.name} rest: {self.rest if self.rest is not None else 0}s>"
 
     def import_data(self, data):
         try:
@@ -79,7 +79,7 @@ class ExerciseLogEntry(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
 
     def __repr__(self):
-        return f"<LogEntry Section: {self.section} Exercise: {self.exercise} Set: {self.set_number} reps: {self.reps} weight: {self.weight}>"
+        return f"<LogEntry Exercise: {self.exercise} Set: {self.set_number} reps: {self.reps} weight: {self.weight}>"
 
     def import_data(self, data):
         try:
