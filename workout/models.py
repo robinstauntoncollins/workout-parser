@@ -33,7 +33,7 @@ class Workout(db.Model):
     exercises = db.relationship('ExerciseLogEntry', backref='workout', lazy='dynamic')
 
     def __repr__(self):
-        return f"<Workout {self.date.date()} of user: {self.user.name}"
+        return f"<Workout {self.date.date()} of user: {self.user.username}>"
 
     def import_data(self, data):
         try:
@@ -51,8 +51,8 @@ class ExerciseLogEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     set_number = db.Column(db.Integer)
     reps = db.Column(db.Integer)
-    weight = db.Column(db.Integer)
-    hold = db.Column(db.Integer)
+    weight = db.Column(db.Integer, default=0)
+    hold = db.Column(db.Integer, default=0)
     rest = db.Column(db.Integer, default=90)
     workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'))
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'))
@@ -86,7 +86,7 @@ class WorkoutSection(db.Model):
     exercises = db.relationship('ExerciseLogEntry', backref='workout_section', lazy='dynamic')
 
     def __repr__(self):
-        return f"<Section: {self.name}"
+        return f"<Section: {self.name}>"
 
     def import_data(self, data):
         try:
