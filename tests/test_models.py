@@ -24,3 +24,21 @@ class TestUserModel():
             'email': '123fake@gmail.com',
             'password_hash': '18hfiaheh923hqohhfskan0f3',
         }
+
+
+
+class TestWorkoutModel():
+    def test_basic(self, test_datetime):
+        new_workout = Workout().import_data({
+            'date': test_datetime,
+            'user_id': 1,
+        })
+        
+        assert new_workout.date == test_datetime
+        assert new_workout.user_id == 1
+        workout_data = new_workout.export_data()
+        assert workout_data == {
+            'date': test_datetime,
+            'user_id': 1,
+            'exercises': []
+        }        

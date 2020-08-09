@@ -18,13 +18,14 @@ class WorkoutListAPI(Resource):
         super(WorkoutListAPI, self).__init__()
 
     def get(self):
-        workouts = models.Workout.query.all()
-        return {'workouts': [marshal(workout, workout_fields) for workout in workouts]}
+        args = self.reqparse.parse_args()
+        workouts = models.Workout.query.filter_by(user_id=args['user_id']).all()
+        return {'workouts': [marshal(workout, workout_fields) for workout in workouts if workout.user.id == args['user_id']]}
 
     def post(self):
         args = self.reqparse.parse_args()
-        customer = models.Customer.query.get_or_404(args['customer_id'])
-        workout = utils.create_workout(customer, args['balance'])
+        workout = models.Workout.query.get_or_404(args['workout_id'])
+        workout = models.Workout().import_data(args)
         models.db.session.add(workout)
         models.db.session.commit()
         return {'workout': marshal(workout, workout_fields)}, 201
@@ -34,7 +35,7 @@ class WorkoutAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('balance', type=float, required=False, location="json")
+        self.reqparse.add_argument('workout_id', type=float, required=False, location="json")
         super(WorkoutAPI, self).__init__()
 
     def get(self, id):

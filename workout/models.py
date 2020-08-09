@@ -49,7 +49,11 @@ class Workout(db.Model):
         return self
 
     def export_data(self):
-        return {}
+        return {
+            'date': self.date,
+            'user_id': self.user_id,
+            'exercises': self.exercises
+        }
 
 
 class ExerciseLogEntry(db.Model):

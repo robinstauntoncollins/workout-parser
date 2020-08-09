@@ -10,7 +10,7 @@ api = Api(api_v1_bp)
 
 from . import workouts
 api.add_resource(workouts.WorkoutListAPI, '/workouts', '/workouts/', endpoint='workouts')
-api.add_resource(workouts.WorkoutAPI, '/workouts/<int:id>', '/workouts/<int:id>/', endpoint='account')
+api.add_resource(workouts.WorkoutAPI, '/workouts/<int:id>', '/workouts/<int:id>/', endpoint='workout')
 
 
 def get_catelog():
