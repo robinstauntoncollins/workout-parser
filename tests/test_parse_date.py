@@ -1,6 +1,6 @@
 import pytest
 
-from workout.parse import parse_date
+from parse import parse_date
 
 class TestParseDate():
 

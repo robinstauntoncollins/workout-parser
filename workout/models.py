@@ -18,12 +18,17 @@ class User(db.Model):
         try:
             self.username = data['username']
             self.email = data.get('email')
+            self.password_hash = data.get('password_hash')
         except KeyError as e:
             raise ValueError(f"Missing parameter: {str(e)}")
         return self
 
     def export_data(self):
-        return {}
+        return {
+            'username': self.username,
+            'email': self.email,
+            'password_hash': self.password_hash
+        }
 
 
 class Workout(db.Model):

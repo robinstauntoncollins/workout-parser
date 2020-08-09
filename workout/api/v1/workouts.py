@@ -4,8 +4,8 @@ from workout import models
 
 workout_fields = {
     'id': fields.Integer,
-    'balance': fields.Float,
-    'customer_id': fields.Integer,
+    'username': fields.String,
+    'email': fields.String,
     'uri': fields.Url('api.workout')
 }
 
