@@ -43,7 +43,7 @@ class Workout(db.Model):
     def import_data(self, data):
         try:
             self.date = data['date']
-            self.user = data['user']
+            self.user_id = data['user_id']
         except KeyError as e:
             raise ValueError(f"Missing parameter: {str(e)}")
         return self
@@ -52,7 +52,7 @@ class Workout(db.Model):
         return {
             'date': self.date,
             'user_id': self.user_id,
-            'exercises': self.exercises
+            'exercises': self.exercises.all()
         }
 
 
@@ -75,18 +75,25 @@ class ExerciseLogEntry(db.Model):
             self.set_number = data['set_number']
             self.reps = data['reps']
             self.weight = data.get('weight')
-            self.section = data.get('section')
             self.hold = data.get('hold')
-            self.workout = data['workout']
-            self.exercise = data['exercise']
-            self.workout_section = data['workout_section']
+            self.workout_id = data['workout_id']
+            self.exercise_id = data['exercise_id']
+            self.workout_section_id = data['workout_section_id']
 
         except KeyError as e:
             raise ValueError(f"Missing parameter: {str(e)}")
         return self
 
     def export_data(self):
-        return {}
+        return {
+            'set_number': self.set_number,
+            'reps': self.reps,
+            'weight': self.weight,
+            'hold': self.hold,
+            'workout_id': self.workout_id,
+            'exercise_id': self.exercise_id,
+            'workout_section_id': self.workout_section_id,
+        }
 
 
 class WorkoutSection(db.Model):

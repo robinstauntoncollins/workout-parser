@@ -28,7 +28,15 @@ class TestUserModel():
 
 
 class TestWorkoutModel():
-    def test_basic(self, test_datetime):
+    def test_basic_workout(self, test_datetime):
+        new_workout = Workout(
+            date=test_datetime,
+            user_id=1
+        )
+        assert new_workout.date == test_datetime
+        assert new_workout.user_id == 1
+
+    def test_import_workout(self, test_datetime):
         new_workout = Workout().import_data({
             'date': test_datetime,
             'user_id': 1,
@@ -36,9 +44,62 @@ class TestWorkoutModel():
         
         assert new_workout.date == test_datetime
         assert new_workout.user_id == 1
+    
+    def test_export_workout(self, new_workout, test_datetime):
         workout_data = new_workout.export_data()
         assert workout_data == {
             'date': test_datetime,
             'user_id': 1,
             'exercises': []
-        }        
+        }
+        
+        
+class TestExerciseLogEntryModel():
+
+    def test_basic_log_entry(self):
+        log_entry = ExerciseLogEntry(
+            set_number=1,
+            reps=5,
+            weight=0,
+            hold=0,
+            workout_id=1,
+            exercise_id=5,
+            workout_section_id=3,
+        )
+        assert log_entry.set_number == 1
+        assert log_entry.reps == 5
+        assert log_entry.weight == 0
+        assert log_entry.hold == 0
+        assert log_entry.workout_id == 1
+        assert log_entry.exercise_id == 5
+        assert log_entry.workout_section_id == 3
+
+    def test_import_log_entry(self):
+        log_entry = ExerciseLogEntry().import_data({
+            'set_number': 1,
+            'reps': 5,
+            'weight': 0,
+            'hold': 0,
+            'workout_id': 1,
+            'exercise_id': 6,
+            'workout_section_id': 3
+        })
+        assert log_entry.set_number == 1
+        assert log_entry.reps == 5
+        assert log_entry.weight == 0
+        assert log_entry.hold == 0
+        assert log_entry.workout_id == 1
+        assert log_entry.exercise_id == 6
+        assert log_entry.workout_section_id == 3
+    
+    def test_export_log_entry(self, exercise_log_entries):
+        log_entry_data = exercise_log_entries[0].export_data()
+        assert log_entry_data == {
+            'set_number': 1,
+            'reps': 5,
+            'weight': 0,
+            'hold': 0,
+            'workout_id': 1,
+            'exercise_id': 6,
+            'workout_section_id': 3
+        }

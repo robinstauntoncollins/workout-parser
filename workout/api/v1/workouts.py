@@ -4,8 +4,8 @@ from workout import models
 
 workout_fields = {
     'id': fields.Integer,
-    'username': fields.String,
-    'email': fields.String,
+    'date': fields.DateTime(dt_format='iso8601'),
+    'user_id': fields.Integer,
     'uri': fields.Url('api.workout')
 }
 
