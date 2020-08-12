@@ -14,6 +14,7 @@ def create_app(config_name: str = None) -> Flask:
         config_name = 'default'
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+    print(f"App Config: {app.config}")
 
     db.init_app(app)
     _ = Migrate(app, db)
