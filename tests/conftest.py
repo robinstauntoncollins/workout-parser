@@ -23,6 +23,10 @@ def test_client():
 def test_datetime():
     return datetime(2020, 8, 9, 19, 54, 00)
 
+@pytest.fixture()
+def new_user():
+    return User().import_data({'username': 'Robin', 'email': '123fake@gmail.com'})
+
 
 @pytest.fixture()
 def new_workout(test_datetime):

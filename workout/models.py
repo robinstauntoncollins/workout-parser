@@ -38,11 +38,11 @@ class Workout(db.Model):
     exercises = db.relationship('ExerciseLogEntry', backref='workout', lazy='dynamic')
 
     def __repr__(self):
-        return f"<Workout {self.date.date()} of user: {self.user.username}>"
+        return f"<Workout {self.date.date() if self.date is not None else ''} of user: {self.user.username}>"
 
     def import_data(self, data):
         try:
-            self.date = data['date']
+            self.date = data.get('date')
             self.user_id = data['user_id']
         except KeyError as e:
             raise ValueError(f"Missing parameter: {str(e)}")

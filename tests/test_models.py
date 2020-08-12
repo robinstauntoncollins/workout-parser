@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from workout.models import User, Workout, ExerciseLogEntry, WorkoutSection, Exercise, \
+from workout.models import db, User, Workout, ExerciseLogEntry, WorkoutSection, Exercise, \
         Variation, Equipment, Category
 
 
@@ -44,6 +44,20 @@ class TestWorkoutModel():
         
         assert new_workout.date == test_datetime
         assert new_workout.user_id == 1
+
+    def test_import_workout_without_date(self, test_client):
+        new_workout = Workout().import_data(
+            {
+                'user_id': 1
+            }
+        )
+        db.session.add(new_workout)
+        db.session.commit()
+        now = datetime.utcnow()
+        workout = Workout.query.first()
+        assert workout.user_id == 1
+        assert type(workout.date) == datetime
+        assert pytest.approx(workout.date.timestamp(), now.timestamp())
     
     def test_export_workout(self, new_workout, test_datetime):
         workout_data = new_workout.export_data()

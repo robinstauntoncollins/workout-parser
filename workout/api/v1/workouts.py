@@ -6,7 +6,7 @@ workout_fields = {
     'id': fields.Integer,
     'date': fields.DateTime(dt_format='iso8601'),
     'user_id': fields.Integer,
-    'uri': fields.Url('api.workout')
+    'self_url': fields.Url('api.workout')
 }
 
 
