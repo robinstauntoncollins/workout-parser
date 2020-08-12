@@ -11,4 +11,5 @@ from . import intent_api_bp
 
 @intent_api_bp.route('/addWorkout', methods=['POST'])
 def new_workout():
-    return 'Hello New Workout'
+    data = request.get_json()
+    

@@ -14,7 +14,7 @@ COPY migrations migrations
 COPY workoutapi.py app.db config.py boot.sh ./
 RUN chmod +x boot.sh
 
-ENV FLASK_APP app.py
+ENV FLASK_APP workoutapi.py
 
 RUN chown -R workoutapi:workoutapi ./
 USER workoutapi
