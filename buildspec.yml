@@ -15,5 +15,5 @@ phases:
     post_build:
         commands:
             - source venv/bin/activate
-            flake8 --statistics
-            pytest -v --cov=workout
+            - flake8 --statistics
+            - pytest -v --cov=workout
