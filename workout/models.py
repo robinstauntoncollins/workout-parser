@@ -68,7 +68,8 @@ class ExerciseLogEntry(db.Model):
     workout_section_id = db.Column(db.Integer, db.ForeignKey('workout_section.id'))
 
     def __repr__(self):
-        return f"<LogEntry Workout: {self.workout_id} Section: {self.workout_section_id} Exercise: {self.exercise_id} Set: {self.set_number} reps: {self.reps} weight: {self.weight}>"
+        return (f"<LogEntry Workout: {self.workout_id} Section: {self.workout_section_id} "
+                f"Exercise: {self.exercise_id} Set: {self.set_number} reps: {self.reps} weight: {self.weight}>")
 
     def import_data(self, data):
         try:

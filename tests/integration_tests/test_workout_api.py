@@ -1,8 +1,7 @@
-from datetime import datetime
 
 import pytest
 
-from workout.models import db, Workout, User, ExerciseLogEntry
+from workout.models import db, Workout, User
 
 
 class TestWorkoutAPI():
@@ -28,7 +27,7 @@ class TestWorkoutAPI():
                 }
             ]
         }
-    
+
     @pytest.mark.skip()
     def test_post_workout(self, new_user, test_client):
         pass

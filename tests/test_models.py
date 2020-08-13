@@ -2,19 +2,18 @@ from datetime import datetime
 
 import pytest
 
-from workout.models import db, User, Workout, ExerciseLogEntry, WorkoutSection, Exercise, \
-        Variation, Equipment, Category
+from workout.models import db, User, Workout, ExerciseLogEntry
 
 
 class TestUserModel():
-    
+
     def test_basic(self):
         new_user = User().import_data({
             'username': 'Robin',
             'email': '123fake@gmail.com',
             'password_hash': '18hfiaheh923hqohhfskan0f3',
         })
-        
+
         assert new_user.username == 'Robin'
         assert new_user.email == '123fake@gmail.com'
         assert new_user.password_hash == '18hfiaheh923hqohhfskan0f3'
@@ -24,7 +23,6 @@ class TestUserModel():
             'email': '123fake@gmail.com',
             'password_hash': '18hfiaheh923hqohhfskan0f3',
         }
-
 
 
 class TestWorkoutModel():
@@ -41,7 +39,7 @@ class TestWorkoutModel():
             'date': test_datetime,
             'user_id': 1,
         })
-        
+
         assert new_workout.date == test_datetime
         assert new_workout.user_id == 1
 
@@ -58,7 +56,7 @@ class TestWorkoutModel():
         assert workout.user_id == 1
         assert type(workout.date) == datetime
         assert pytest.approx(workout.date.timestamp(), now.timestamp())
-    
+
     def test_export_workout(self, new_workout, test_datetime):
         workout_data = new_workout.export_data()
         assert workout_data == {
@@ -66,8 +64,8 @@ class TestWorkoutModel():
             'user_id': 1,
             'exercises': []
         }
-        
-        
+
+
 class TestExerciseLogEntryModel():
 
     def test_basic_log_entry(self):
@@ -105,7 +103,7 @@ class TestExerciseLogEntryModel():
         assert log_entry.workout_id == 1
         assert log_entry.exercise_id == 6
         assert log_entry.workout_section_id == 3
-    
+
     def test_export_log_entry(self, exercise_log_entries):
         log_entry_data = exercise_log_entries[0].export_data()
         assert log_entry_data == {

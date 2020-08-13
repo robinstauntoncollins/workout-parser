@@ -20,7 +20,13 @@ class WorkoutListAPI(Resource):
     def get(self):
         args = self.reqparse.parse_args()
         workouts = models.Workout.query.filter_by(user_id=args['user_id']).all()
-        return {'workouts': [marshal(workout, workout_fields) for workout in workouts if workout.user.id == args['user_id']]}
+        return {
+            'workouts': [
+                marshal(workout, workout_fields)
+                for workout in workouts
+                if workout.user.id == args['user_id']
+            ]
+        }
 
     def post(self):
         args = self.reqparse.parse_args()
