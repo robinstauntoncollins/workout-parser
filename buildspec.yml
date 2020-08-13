@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            python: 3.7
+        commands:
+            - python3 -m venv venv
+            - source venv/bin/activate
+            - pip3 install --upgrade flake8 pytest pytest-cov
+            - pip3 install -r requirements.txt
+    build:
+        commands:
+            - echo Nothing to do at build stage
+    post_build:
+        commands:
+            - source venv/bin/activate
+            flake8 --statistics
+            pytest -v --cov=workout
