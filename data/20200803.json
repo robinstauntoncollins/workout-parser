@@ -3,23 +3,45 @@
     "exercises": [
         {
             "section": "Warm-up",
-            "name": "Assisted Arch hangs"
+            "name": "Assisted Arch hangs",
+            "reps": [10],
+            "rest": 0
         },
         {
             "section": "Strength",
-            "name": "Ring Pull-ups"
+            "name": "Ring Pull-ups",
+            "reps":[3, 3, 2],
+            "rest": 90
         },
         {
             "section": "Strength",
-            "name": "Beginner shrimp squat"
+            "name": "Ring Pull-ups negatives",
+            "reps": [2, 2, 3],
+            "rest": 90
         },
         {
             "section": "Strength",
-            "name": "Ring dips"
+            "name": "Beginner shrimp squat",
+            "reps": [5, 5, 5],
+            "rest": 90
+        },
+        {
+            "section": "Strength",
+            "name": "Ring dips",
+            "reps": [2, 2],
+            "rest": 90
+        },
+        {
+            "section": "Strength",
+            "name": "Ring dips negatives",
+            "reps": [3, 3],
+            "rest": 90
         },
         {
             "section": "Core",
-            "name": "Ab wheel rollout"
+            "name": "Ab wheel rollout",
+            "reps": [5, 5],
+            "rest": 0
         }
     ]
 }
