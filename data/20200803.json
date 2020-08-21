@@ -5,42 +5,56 @@
             "section": "Warm-up",
             "name": "Assisted Arch hangs",
             "reps": [10],
+            "weight": 0,
+            "time": 0,
             "rest": 0
         },
         {
             "section": "Strength",
             "name": "Ring Pull-ups",
             "reps":[3, 3, 2],
+            "weight": 0,
+            "time": 0,
             "rest": 90
         },
         {
             "section": "Strength",
             "name": "Ring Pull-ups negatives",
             "reps": [2, 2, 3],
+            "weight": 0,
+            "time": 0,
             "rest": 90
         },
         {
             "section": "Strength",
             "name": "Beginner shrimp squat",
             "reps": [5, 5, 5],
+            "weight": 0,
+            "time": 0,
             "rest": 90
         },
         {
             "section": "Strength",
             "name": "Ring dips",
             "reps": [2, 2],
+            "weight": 0,
+            "time": 0,
             "rest": 90
         },
         {
             "section": "Strength",
             "name": "Ring dips negatives",
             "reps": [3, 3],
+            "weight": 0,
+            "time": 0,
             "rest": 90
         },
         {
             "section": "Core",
             "name": "Ab wheel rollout",
             "reps": [5, 5],
+            "weight": 0,
+            "time": 0,
             "rest": 0
         }
     ]

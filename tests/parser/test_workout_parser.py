@@ -10,7 +10,7 @@ class TestWorkoutParser():
         
     full_workout_data = [
         ('./data/20200803.txt', './data/20200803.json'),
-        # ('./data/20200814.txt', './data/20200814.json'),
+        ('./data/20200814.txt', './data/20200814.json'),
         # ('./data/recommended_routine.txt', './data/recommended_routine.json'),
         # ('./data/starting_strength_example_workout.txt', './data/starting_strength_example_workout.json'),
     ]
@@ -42,14 +42,11 @@ class TestWorkoutParser():
         result = WorkoutParser(date_text)._extract_date()
         assert result == expected
 
-    def test_extract_lines(self):
-        # TODO
-        pass
-
     is_section_header_test_data = [
         ('Warmup:', True),
         ('Warm-up:', True),
         ('Pair 1:', True),
+        ('Bike (7): 7mins', False),
         ('Assisted Arch Hangs: x5', False),
         ('Pullups: x5 x5 x5', False),
         ('BB Squat (50kg+bar): x5 x5 x5', False),
@@ -68,6 +65,7 @@ class TestWorkoutParser():
             [
                 '3 August 2020',
                 'Warm-up:',
+                'Bike (7): 7mins',
                 'Assisted Arch Hangs: x5',
                 'Strength:',
                 'Pullups: x5 x5 x5',
@@ -83,6 +81,7 @@ class TestWorkoutParser():
                 {
                     'name': 'Warm-up',
                     'exercises': [
+                        'Bike (7): 7mins',
                         'Assisted Arch Hangs: x5',
                     ],
                     'rest': 0
@@ -126,6 +125,7 @@ class TestWorkoutParser():
 
 
     exercise_data = [
+        ('Bike (7): 7mins', {"name": "Bike", "reps": [0], "time": 420}),
         ('Assisted Arch Hangs: x5', {"name": "Assisted Arch Hangs", "reps": [5]}),
         ('Assisted Arch Hangs: x10', {"name": "Assisted Arch Hangs", "reps": [10]}),
         ('Pullups: x5 x5 x5', {"name": "Pullups", "reps": [5, 5, 5]}),
@@ -189,4 +189,15 @@ class TestWorkoutParser():
     @pytest.mark.parametrize("section,expected", generate_exercise_test_data)
     def test_generate_exercises_from_section(self, section, expected):
         result = WorkoutParser(None)._generate_exercises_from_section(section)
+        assert result == expected
+
+    extract_weight_test_data = [
+        ('Bike (7)', 7),
+        ('BB squat (40kg+bar)', 40),
+        ('Bench press (bar)', 0),
+    ]
+
+    @pytest.mark.parametrize("name,expected", extract_weight_test_data)
+    def test_extract_weight(self, name, expected):
+        result = WorkoutParser(None)._extract_weight_from_name(name)
         assert result == expected

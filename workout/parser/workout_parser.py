@@ -8,10 +8,15 @@ class WorkoutParser():
         'date': r"[\d]{1,2}(?:[trns]\w*)? [ADFJMNOS]\w* [\d]{4}",
         'lines': r".*\S.*",
         'section_header': r"^.*:$",
-        'exercise': r"(.+):(.+)",
+        'exercise': {
+            'exercise': r"(.+):(.+)",
+            'exercise_reps': r"(?:x)(\d{1,2})(?:\+(\d\s?negs?))?",
+            'exercise_time': r".+(\d)?:(\s?\d\s?mins?)",
+            'exercise_weight': r".+\((\d{0,2}).*\)",
+            'negative_reps': r"(\d)\s?negs?",
+        },
         'rest': r"(?:\w+(?::)?\s)([\d]{1,2}\s?)(\w{1,4})",
-        'exercise_reps': r"(?:x)(\d{1,2})(?:\+(\d\s?negs?))?",
-        'negative_reps': r"(\d)\s?negs?",
+        
     }
     
     def __init__(self, raw):
@@ -46,7 +51,6 @@ class WorkoutParser():
         sections = []
         section = {'name': None, 'exercises': [], 'rest': 0}
         for i, line in enumerate(lines):
-            # print(f"Sections so far: {sections}")
             print(f"Working on line: {line}")
             if self._is_section_header(line):
                 if section['name'] is not None:
@@ -56,8 +60,6 @@ class WorkoutParser():
                 section['name'] = line.split(':')[0]
             elif 'rest' in line.lower():
                 section['rest'] = self._parse_rest_string(line)
-                # sections.append(section)
-                # section = {'name': None, 'exercises': [], 'rest': 0}
             else:
                 if section['name'] is not None:
                     section['exercises'].append(line)
@@ -98,20 +100,22 @@ class WorkoutParser():
                 })
         return exercise_list
 
-
-
     def _extract_exercise(self, text: str):
         print(f"Received: text: {text}")
         if type(text) != str:
             raise ValueError(f"Got {type(text)} expected 'str'")
 
         name, reps = text.split(':')
-        
-        p = re.compile(self.patterns['exercise_reps'])
+        print(f"Name: '{name}' - reps: '{reps}'")
+        p = re.compile(self.patterns['exercise']['exercise_reps'])
         matches = p.findall(reps)
+        print(f"Reps matches: {matches}")
         if not matches:
-            print(f"Not an exercise: {text}")
-            return
+            p = re.compile(self.patterns['exercise']['exercise_time'])
+            matches = p.findall(reps)
+            print(f"Time matches: {matches}")
+            if not matches:
+                raise ValueError(f"No match for {text}")
         print(f"Matches: {matches}")
         reps = [int(pair[0]) for pair in matches]
         negs = [pair[1] for pair in matches]
@@ -125,7 +129,7 @@ class WorkoutParser():
         return {"name": name.strip(), "reps": reps}
 
     def _generate_negative(self, name: str, reps: List[str]) -> Dict[str, Union[str, List[int]]]:
-        p = re.compile(self.patterns['negative_reps'])
+        p = re.compile(self.patterns['exercise']['negative_reps'])
         reps_vals: List[int] = []
         for rep in reps:
             match = p.match(rep)
@@ -137,6 +141,13 @@ class WorkoutParser():
             "name": name + ' negatives',
             "reps": reps_vals
         }
+
+    def _extract_weight_from_name(self, name):
+        p = re.compile(self.patterns['exercise']['exercise_weight'])
+        matches = p.match(name)
+        if not matches:
+            raise ValueError(f"No match for {name}")
+        return matches.group(1)
 
 
 
