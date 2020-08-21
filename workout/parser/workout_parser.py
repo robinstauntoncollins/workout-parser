@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Dict, Union
 
 class WorkoutParser():
 
@@ -9,7 +9,8 @@ class WorkoutParser():
         'section_header': r"^.*:$",
         'exercise': r"(.+):(.+)",
         'rest': r"(?:\w+(?::)?\s)([\d]{1,2}\s?)(\w{1,4})",
-        'exercise_reps': r"(?:x)(\d{1,2})(?:\+(\d\s?negs?))?"
+        'exercise_reps': r"(?:x)(\d{1,2})(?:\+(\d\s?negs?))?",
+        'negative_reps': r"(\d)\s?negs?",
     }
     
     def __init__(self, raw):
@@ -82,21 +83,36 @@ class WorkoutParser():
         if not matches:
             print(f"Not an exercise: {text}")
             return
+        print(f"Matches: {matches}")
         reps = [int(pair[0]) for pair in matches]
+        negs = [pair[1] for pair in matches]
+        has_negs = [bool(neg) for neg in negs]
+        if any(has_negs):
+            neg_exercise = self._generate_negative(name.strip(), negs)
+            return [
+                {"name": name.strip(), "reps": reps},
+                neg_exercise,
+            ]
         return {"name": name.strip(), "reps": reps}
+
+    def _generate_negative(self, name: str, reps: List[str]) -> Dict[str, Union[str, List[int]]]:
+        p = re.compile(self.patterns['negative_reps'])
+        reps_vals: List[int] = []
+        for rep in reps:
+            match = p.match(rep)
+            if not match:
+                reps_vals.append(0)
+            else:
+                reps_vals.append(int(match.group(1)))
+        return {
+            "name": name + ' negatives',
+            "reps": reps_vals
+        }
+
 
 
 if __name__ == '__main__':
-    lines = [
-                '3 August 2020',
-                'Warm-up:',
-                'Assisted Arch Hangs: x5',
-                'Pair 1:',
-                'Pullups: x5 x5 x5',
-                'Rest: 90s',
-                'Pair 2:',
-                'BB Squat (50kg+bar): x5 x5 x5',
-                'Rest 2 mins',
-    ]
-    result = WorkoutParser(None)._extract_sections(lines)
+    norm = 'Pullups: x5 x5 x5'
+    negs = 'Ring Dips: x3+2 negs x3+2 negs x2+3negs'
+    result = WorkoutParser(None)._extract_exercise(negs)
     print(result)

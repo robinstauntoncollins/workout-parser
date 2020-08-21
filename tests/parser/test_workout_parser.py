@@ -130,6 +130,13 @@ class TestWorkoutParser():
                 {"name": "Ring Dips", "reps": [3, 3, 2]},
                 {"name": "Ring Dips negatives", "reps": [2, 2, 3]}
             ]
+        ),
+        (
+            'Ring Dips: x8 x8 x3+2negs',
+            [
+                {"name": "Ring Dips", "reps": [8, 8, 3]},
+                {"name": "Ring Dips negatives", "reps": [0, 0, 2]}
+            ]
         )
     ]
 
@@ -138,3 +145,18 @@ class TestWorkoutParser():
         result = WorkoutParser(None)._extract_exercise(text)
         assert result == expected
     
+    negative_reps_test_data = [
+        (
+            "Ring Dips",
+            ['', '', '3 negs'],
+            {
+                'name': "Ring Dips negatives",
+                'reps': [0, 0, 3]
+            }
+        )
+    ]
+    
+    @pytest.mark.parametrize("name,reps,expected", negative_reps_test_data)
+    def test_generate_negative(self, name, reps, expected):
+        result = WorkoutParser(None)._generate_negative(name, reps)
+        assert result == expected
