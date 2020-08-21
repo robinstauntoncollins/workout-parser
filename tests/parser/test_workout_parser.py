@@ -69,30 +69,35 @@ class TestWorkoutParser():
                 '3 August 2020',
                 'Warm-up:',
                 'Assisted Arch Hangs: x5',
-                'Pair 1:',
+                'Strength:',
                 'Pullups: x5 x5 x5',
+                'Beginner shrimp squat: x5 x5 x5',
                 'Rest: 90s',
-                'Pair 2:',
+                'Ring dips: x2+3negs x2+3negs',
+                'Rest 90s',
+                'Legs:',
                 'BB Squat (50kg+bar): x5 x5 x5',
                 'Rest 2 mins',
             ],
             [
                 {
-                    'name': 'Warm-up:',
+                    'name': 'Warm-up',
                     'exercises': [
                         'Assisted Arch Hangs: x5',
                     ],
-                    'rest': None
+                    'rest': 0
                 },
                 {
-                    'name': 'Pair 1:',
+                    'name': 'Strength',
                     'exercises': [
                         'Pullups: x5 x5 x5',
+                        'Beginner shrimp squat: x5 x5 x5',
+                        'Ring dips: x2+3negs x2+3negs',
                     ],
                     'rest': 90
                 },
                 {
-                    'name': 'Pair 2:',
+                    'name': 'Legs',
                     'exercises': [
                         'BB Squat (50kg+bar): x5 x5 x5',
                     ],
@@ -159,4 +164,29 @@ class TestWorkoutParser():
     @pytest.mark.parametrize("name,reps,expected", negative_reps_test_data)
     def test_generate_negative(self, name, reps, expected):
         result = WorkoutParser(None)._generate_negative(name, reps)
+        assert result == expected
+
+    generate_exercise_test_data = [
+        (
+            {'name': 'Warm-up:', 'exercises': ['Assisted Arch Hangs: x5'], 'rest': 0},
+            [
+                {
+                    'section': 'Warm-up:',
+                    'name': 'Assisted Arch Hangs',
+                    'reps': [5],
+                    'rest': 0
+                }
+            ]
+        ),
+        (
+            {'name': 'Pair 1', 'exercises': ['Pullups: x5 x5 x5'], 'rest': 90},
+            [
+                {'section': 'Pair 1', 'name': 'Pullups', 'reps': [5, 5, 5], 'rest': 90}
+            ]
+        )
+    ]
+    
+    @pytest.mark.parametrize("section,expected", generate_exercise_test_data)
+    def test_generate_exercises_from_section(self, section, expected):
+        result = WorkoutParser(None)._generate_exercises_from_section(section)
         assert result == expected

@@ -1,5 +1,6 @@
 import re
 from typing import List, Dict, Union
+from itertools import chain
 
 class WorkoutParser():
 
@@ -22,11 +23,11 @@ class WorkoutParser():
         print(f"Lines: {lines}")
         sections = self._extract_sections(lines)
         print(f"Sections: {sections}")
-        exercise_strings = [ex for section in sections for ex in section['exercises']]
-        self.exercises = [self._extract_exercise(ex) for ex in exercise_strings]
+        exercises = list(chain.from_iterable([self._generate_exercises_from_section(section) for section in sections]))
+        print(f"Exercises: {exercises}")
         return {
             'date': date,
-            'exercises': self.exercises
+            'exercises': exercises
         }
 
     def _extract_date(self):
@@ -43,23 +44,26 @@ class WorkoutParser():
 
     def _extract_sections(self, lines: List[str]) -> dict:
         sections = []
-        section = {'name': None, 'exercises': [], 'rest': None}
+        section = {'name': None, 'exercises': [], 'rest': 0}
         for i, line in enumerate(lines):
-            print(line)
+            # print(f"Sections so far: {sections}")
+            print(f"Working on line: {line}")
             if self._is_section_header(line):
                 if section['name'] is not None:
                     sections.append(section)
-                    section = {'name': None, 'exercises': [], 'rest': None}
-                section['name'] = line
+                    print(f"Finished section: {section}")
+                    section = {'name': None, 'exercises': [], 'rest': 0}
+                section['name'] = line.split(':')[0]
             elif 'rest' in line.lower():
                 section['rest'] = self._parse_rest_string(line)
-                sections.append(section)
-                section = {'name': None, 'exercises': [], 'rest': None}
+                # sections.append(section)
+                # section = {'name': None, 'exercises': [], 'rest': 0}
             else:
                 if section['name'] is not None:
                     section['exercises'].append(line)
                 else:
                     continue
+        sections.append(section)
         return sections
 
     def _parse_rest_string(self, string: str) -> int:
@@ -69,6 +73,31 @@ class WorkoutParser():
         if unit == 'mins':
             return int(val) * 60
         return int(val)
+
+    def _generate_exercises_from_section(self, section: Dict[str, Union[str, List[str]]]) -> List[dict]:
+        exercises: List[Dict[str, Union[str, List[int]]]] = []
+        section_name = section['name']
+        section_rest = section['rest']
+        exercise_list: List[Dict[str, Union[str, List[int]]]] = []
+        for exercise_text in section['exercises']:
+            exercise = self._extract_exercise(exercise_text)
+            if type(exercise) == list:
+                for ex in exercise:
+                    exercise_list.append({
+                    'section': section_name,
+                    'name': ex['name'],
+                    'reps': ex['reps'],
+                    'rest': section_rest
+                })
+            else:
+                exercise_list.append({
+                    'section': section_name,
+                    'name': exercise['name'],
+                    'reps': exercise['reps'],
+                    'rest': section_rest
+                })
+        return exercise_list
+
 
 
     def _extract_exercise(self, text: str):
