@@ -125,38 +125,50 @@ class TestWorkoutParser():
 
 
     exercise_data = [
-        ('Bike (7): 7mins', {"name": "Bike", "reps": [0], "time": 420}),
-        ('Assisted Arch Hangs: x5', {"name": "Assisted Arch Hangs", "reps": [5]}),
-        ('Assisted Arch Hangs: x10', {"name": "Assisted Arch Hangs", "reps": [10]}),
-        ('Pullups: x5 x5 x5', {"name": "Pullups", "reps": [5, 5, 5]}),
+        ('Bike (7): 7mins', [{"name": "Bike", "reps": [], "time": 420, "weight": 7}]),
+        ('Assisted Arch Hangs: x5', [{"name": "Assisted Arch Hangs", "reps": [5], "time": 0, "weight": 0}]),
+        ('Assisted Arch Hangs: x10', [{"name": "Assisted Arch Hangs", "reps": [10], "time": 0, "weight": 0}]),
+        ('Pullups: x5 x5 x5', [{"name": "Pullups", "reps": [5, 5, 5], "time": 0, "weight": 0}]),
         (
             'Ring Dips: x3+2 negs x3+2 negs x2+3negs',
             [
-                {"name": "Ring Dips", "reps": [3, 3, 2]},
-                {"name": "Ring Dips negatives", "reps": [2, 2, 3]}
+                {"name": "Ring Dips", "reps": [3, 3, 2], "time": 0, "weight": 0},
+                {"name": "Ring Dips negatives", "reps": [2, 2, 3], "time": 0, "weight": 0},
             ]
         ),
         (
             'Ring Dips: x8 x8 x3+2negs',
             [
-                {"name": "Ring Dips", "reps": [8, 8, 3]},
-                {"name": "Ring Dips negatives", "reps": [0, 0, 2]}
+                {"name": "Ring Dips", "reps": [8, 8, 3], "time": 0, "weight": 0},
+                {"name": "Ring Dips negatives", "reps": [2], "time": 0, "weight": 0}
             ]
         )
     ]
 
     @pytest.mark.parametrize("text,expected", exercise_data)
-    def test_extract_exercise(self, text, expected):
-        result = WorkoutParser(None)._extract_exercise(text)
+    def test_extract_exercises(self, text, expected):
+        result = WorkoutParser(None)._extract_exercises(text)
         assert result == expected
     
     negative_reps_test_data = [
         (
             "Ring Dips",
-            ['', '', '3 negs'],
+            ' x3+2 negs x3+2 negs x2+3negs',
             {
                 'name': "Ring Dips negatives",
-                'reps': [0, 0, 3]
+                'reps': [2, 2, 3],
+                'time': 0,
+                'weight': 0,
+            }
+        ),
+        (
+            "Ring Dips",
+            'x3 x3 x2+3negs',
+            {
+                'name': "Ring Dips negatives",
+                'reps': [3],
+                'time': 0,
+                'weight': 0,
             }
         )
     ]
@@ -194,7 +206,7 @@ class TestWorkoutParser():
     extract_weight_test_data = [
         ('Bike (7)', 7),
         ('BB squat (40kg+bar)', 40),
-        ('Bench press (bar)', 0),
+        ('Bench press (0kg+bar)', 0),
     ]
 
     @pytest.mark.parametrize("name,expected", extract_weight_test_data)
