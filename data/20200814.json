@@ -10,7 +10,7 @@
             "rest": 0
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Pull-ups",
             "reps": [5, 5, 4],
             "weight": 0,
@@ -18,15 +18,15 @@
             "rest": 90
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Pull-ups negatives",
-            "reps": [0, 0, 1],
+            "reps": [1],
             "weight": 0,
             "time": 0,
             "rest": 90
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "BB squat",
             "reps": [6, 5, 5, 5],
             "weight": [40, 50, 40, 40],
@@ -34,7 +34,7 @@
             "rest": 120
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Dips",
             "reps": [5, 5, 5],
             "weight": 0,
@@ -42,7 +42,7 @@
             "rest": 120
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Bench press",
             "reps": [10, 5, 5, 5],
             "weight": [0, 20, 20, 20],
@@ -50,15 +50,15 @@
             "rest": 120
         },
         {
-            "section": "",
-            "name": "Machine shoulder press",
+            "section": "Strength",
+            "name": "Machine Shoulder press",
             "reps": [8],
             "weight": [15],
             "time": 0,
             "rest": 90
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Seated Dumbbell Shoulder Press",
             "reps": [8, 8, 8],
             "weight": [10],
@@ -66,7 +66,7 @@
             "rest": 90
         },
         {
-            "section": "",
+            "section": "Strength",
             "name": "Dumbbell bicep curls",
             "reps": [8, 8, 8],
             "weight": [10],

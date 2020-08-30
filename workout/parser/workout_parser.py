@@ -2,7 +2,7 @@ import re
 from typing import List, Dict, Union
 from itertools import chain
 
-from workout.entities import Exercise
+# from entities import Exercise
 
 class WorkoutParser():
 
@@ -27,11 +27,19 @@ class WorkoutParser():
 
     def parse(self):
         date = self._extract_date()
+        raw_sections = self._extract_raw_sections()
         lines = self._extract_lines()
         print(f"Lines: {lines}")
         sections = self._extract_sections(lines)
         print(f"Sections: {sections}")
-        exercises = list(chain.from_iterable([self._generate_exercises_from_section(section) for section in sections]))
+        exercises = list(
+            chain.from_iterable(
+                [
+                    self._generate_exercises_from_section(section)
+                    for section in sections
+                ]
+            )
+        )
         print(f"Exercises: {exercises}")
         return {
             'date': date,
@@ -42,6 +50,10 @@ class WorkoutParser():
         p = re.compile(self.patterns['date'])
         return p.search(self.raw).group()
 
+    def _extract_raw_sections(self):
+        sections = self.raw.split('\n\n')
+        return sections
+
     def _extract_lines(self):
         p = re.compile(self.patterns['lines'])
         return re.findall(p, self.raw)
@@ -50,16 +62,20 @@ class WorkoutParser():
         p = re.compile(self.patterns['section_header'])
         return bool(p.match(text))
 
-    def _extract_sections(self, lines: List[str]) -> dict:
+    def _extract_section(self, section: str):
+        
+
+
+    def _extract_sections(self, sections: List[str]) -> dict:
         sections = []
-        section = {'name': None, 'exercises': [], 'rest': 0}
+        section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
         for i, line in enumerate(lines):
             print(f"Working on line: {line}")
             if self._is_section_header(line):
                 if section['name'] is not None:
                     sections.append(section)
                     print(f"Finished section: {section}")
-                    section = {'name': None, 'exercises': [], 'rest': 0}
+                    section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
                 section['name'] = line.split(':')[0]
             elif 'rest' in line.lower():
                 section['rest'] = self._parse_rest_string(line)
@@ -92,14 +108,18 @@ class WorkoutParser():
                     'section': section_name,
                     'name': ex['name'],
                     'reps': ex['reps'],
-                    'rest': section_rest
+                    'rest': section_rest,
+                    'weight': ex['weight'],
+                    'time': ex['time']
                 })
             else:
                 exercise_list.append({
                     'section': section_name,
                     'name': exercise['name'],
                     'reps': exercise['reps'],
-                    'rest': section_rest
+                    'rest': section_rest,
+                    'weight': exercise['weight'],
+                    'time': exercise['time']
                 })
         return exercise_list
 
@@ -118,6 +138,12 @@ class WorkoutParser():
             print(f"Reps type exercise")
             reps = self._parse_reps_exercise(info)
             exercise['reps'] = reps
+            try:
+                weight = [self._extract_weight_from_name(name)]
+            except ValueError as e:
+                print(f"No weight to parse: {str(e)}")
+            else:
+                exercise['weight'] = weight
             exercises.append(exercise)
 
             neg_exercise = self._generate_negative(name, info)
@@ -132,7 +158,7 @@ class WorkoutParser():
             exercise['weight'] = weight
             exercise['time'] = time
             exercises.append(exercise)
-
+        print(f"Returning exercises: {exercises}")
         return exercises
 
     def _extract_time(self, text):
@@ -180,7 +206,9 @@ class WorkoutParser():
 
 
 if __name__ == '__main__':
-    norm = 'Pullups: x5 x5 x5'
-    negs = 'Ring Dips: x3+2 negs x3+2 negs x2+3negs'
-    result = WorkoutParser(None)._extract_exercise(negs)
-    print(result)
+    with open('data/20200814.txt') as f:
+        data = f.read()
+    paragraphs = WorkoutParser(data)._extract_raw_sections()
+    print(paragraphs)
+    for i, paragraph in enumerate(paragraphs):
+        print(f"{i}: {paragraph}")
