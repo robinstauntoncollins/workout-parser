@@ -63,8 +63,10 @@ class WorkoutParser():
         return bool(p.match(text))
 
     def _extract_section(self, section: str):
-        
-
+        parts = section.split('\n')
+        if self._is_section_header(parts[0]):
+            section_name = parts[0].split(':')[0]
+        return {'name': section_name, 'parts': parts[1::]}
 
     def _extract_sections(self, sections: List[str]) -> dict:
         sections = []

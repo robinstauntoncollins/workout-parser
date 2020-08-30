@@ -9,7 +9,7 @@ from . import intent_api_bp
 # from .common import account_fields
 
 
-@intent_api_bp.route('/addWorkout', methods=['POST'])
+@intent_api_bp.route('/new_workout', methods=['POST'])
 def new_workout():
     data = request.get_json()
     print(data)
