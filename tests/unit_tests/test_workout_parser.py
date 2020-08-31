@@ -155,8 +155,8 @@ Rest: 90s""",
             'Warm-up:\nBike (7): 7 mins\nAssisted Arch Hangs: x5',
             {
                 'name': 'Warm-up',
-                'exercises': [
-                    'Bike (7): 7mins',
+                'parts': [
+                    'Bike (7): 7 mins',
                     'Assisted Arch Hangs: x5',
                 ],
             },
@@ -164,7 +164,7 @@ Rest: 90s""",
         (
             'Strength:\nPull-ups: x5 x5 x4+1 neg\nRest 90s',
             {
-                'section': 'Strength',
+                'name': 'Strength',
                 'parts': [
                     'Pull-ups: x5 x5 x4+1 neg',
                     'Rest 90s'
@@ -172,6 +172,11 @@ Rest: 90s""",
             },
         )
     ]
+
+    @pytest.mark.parametrize("section_string, expected", extract_section_test_data)
+    def test_extract_section(self, section_string, expected):
+        result = WorkoutParser(None)._extract_section(section_string)
+        assert result == expected
 
     rest_string_test_data = [
         ('Rest: 90s', 90),

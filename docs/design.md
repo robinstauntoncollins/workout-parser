@@ -64,5 +64,11 @@ Exercise Category: (which part of body does this exercise use?)
     Eg. Push, Pull, Legs
 
 
+## User Story 1:
+Signed in user copies and pastes their workout text into the text box and clicks
+'verify'. The website returns the parsed version of the workout and asks user
+to confirm the accuracy. The user confirms that it has been parsed accurately
+and clicks 'upload' to upload and store their workout.
+
 
 
