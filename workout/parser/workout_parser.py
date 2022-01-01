@@ -71,7 +71,7 @@ class WorkoutParser():
     def _extract_sections(self, sections: List[str]) -> dict:
         sections = []
         section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
-        for i, line in enumerate(lines):
+        for i, line in enumerate(sections):
             print(f"Working on line: {line}")
             if self._is_section_header(line):
                 if section['name'] is not None:
@@ -208,9 +208,7 @@ class WorkoutParser():
 
 
 if __name__ == '__main__':
-    with open('data/20200814.txt') as f:
+    with open('data/20200803.txt') as f:
         data = f.read()
-    paragraphs = WorkoutParser(data)._extract_raw_sections()
-    print(paragraphs)
-    for i, paragraph in enumerate(paragraphs):
-        print(f"{i}: {paragraph}")
+    result = WorkoutParser(data).parse()
+    print(f"Result: {result}")

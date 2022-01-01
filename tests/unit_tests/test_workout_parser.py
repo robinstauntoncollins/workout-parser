@@ -10,7 +10,7 @@ class TestWorkoutParser():
         
     full_workout_data = [
         ('./data/20200803.txt', './data/20200803.json'),
-        ('./data/20200814.txt', './data/20200814.json'),
+        # ('./data/20200814.txt', './data/20200814.json'),
         # ('./data/recommended_routine.txt', './data/recommended_routine.json'),
         # ('./data/starting_strength_example_workout.txt', './data/starting_strength_example_workout.json'),
     ]
@@ -140,6 +140,45 @@ Rest: 90s""",
                         'Rest: 90s',
                     ],
                 },
+            ]
+        ),
+        (
+            [
+                '3 August 2020',
+                'Warm-up:',
+                'Assisted Arch hangs: x10',
+                'Strength:',
+                'Ring Pull-ups: x3+2 negs x3+2 negs x2+3negs',
+                'Beginner shrimp squat: x5 x5 x5',
+                'Rest: 90s',
+                'Ring dips: x2+3negs x2+3negs',
+                'Rest 90s',
+                'Core:',
+                'Ab wheel rollout: x5 x5'
+            ],
+            [
+                {
+                    'name': 'Warm-up',
+                    'exercises': [
+                        'Assisted Arch hangs: x10',
+                    ]
+                },
+                {
+                    'name': 'Strength',
+                    'exercises': [
+                        'Ring Pull-ups: x3+2 negs x3+2 negs x2+3negs',
+                        'Beginner shrimp squat: x5 x5 x5',
+                        'Rest: 90s',
+                        'Ring dips: x2+3negs x2+3negs',
+                        'Rest 90s',
+                    ]
+                },
+                {
+                    'name': 'Core',
+                    'sections': [
+                        'Ab wheel rollout: x5 x5'
+                    ]
+                }
             ]
         )
     ]
