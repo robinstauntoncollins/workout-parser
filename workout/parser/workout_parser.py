@@ -14,7 +14,7 @@ class WorkoutParser():
             'exercise': r"(.+):(.+)",
             'exercise_reps': r"(?:x)(\d{1,2})(?:\+(\d\s?negs?))?",
             'exercise_reps_only': r"(?:x)(\d{1,2})",
-            'exercise_time': r"(?:\s?(\d)\s?mins?)",
+            'exercise_time': r"(?:\s?(\d+)\s?mins?)",
             'exercise_weight': r".+\((\d{0,2}).*\)",
             'negative_reps': r"(\d)\s?negs?",
         },
@@ -27,24 +27,32 @@ class WorkoutParser():
 
     def parse(self):
         date = self._extract_date()
+        logging.info(f"Date: {date}")
         raw_sections = self._extract_raw_sections()
-        lines = self._extract_lines()
-        print(f"Lines: {lines}")
-        sections = self._extract_sections(lines)
-        print(f"Sections: {sections}")
-        exercises = list(
-            chain.from_iterable(
-                [
-                    self._generate_exercises_from_section(section)
-                    for section in sections
-                ]
-            )
-        )
-        print(f"Exercises: {exercises}")
-        return {
-            'date': date,
-            'exercises': exercises
-        }
+        logging.debug(f"Raw sections: {raw_sections}")
+        for section in raw_sections[1::]:
+            logging.debug(f"Parsing section: {section}")
+            for line in section:
+                logging.debug(f"Parsing line: {line}")
+                exercises = self._extract_exercises(line)
+                logging.debug(f"Exercises: {exercises}")
+        # lines = self._extract_lines()
+        # logging.info(f"Lines: {lines}")
+        # sections = self._extract_sections(lines)
+        # logging.info(f"Sections: {sections}")
+        # exercises = list(
+        #     chain.from_iterable(
+        #         [
+        #             self._generate_exercises_from_section(section)
+        #             for section in sections
+        #         ]
+        #     )
+        # )
+        # logging.info(f"Exercises: {exercises}")
+        # return {
+        #     'date': date,
+        #     'exercises': exercises
+        # }
 
     def _extract_date(self):
         p = re.compile(self.patterns['date'])
@@ -52,6 +60,7 @@ class WorkoutParser():
 
     def _extract_raw_sections(self):
         sections = self.raw.split('\n\n')
+        sections = [section.split('\n') for section in sections[1::]]
         return sections
 
     def _extract_lines(self):
@@ -68,26 +77,58 @@ class WorkoutParser():
             section_name = parts[0].split(':')[0]
         return {'name': section_name, 'parts': parts[1::]}
 
-    def _extract_sections(self, sections: List[str]) -> dict:
-        sections = []
-        section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
-        for i, line in enumerate(sections):
-            print(f"Working on line: {line}")
-            if self._is_section_header(line):
-                if section['name'] is not None:
-                    sections.append(section)
-                    print(f"Finished section: {section}")
-                    section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
-                section['name'] = line.split(':')[0]
-            elif 'rest' in line.lower():
-                section['rest'] = self._parse_rest_string(line)
-            else:
-                if section['name'] is not None:
-                    section['exercises'].append(line)
-                else:
-                    continue
-        sections.append(section)
-        return sections
+    def _extract_exercise_name(self, text: str) -> str:
+        p = re.compile(self.patterns['exercise'])
+        matches = p.match(text)
+
+
+    def _extract_section_exercises(self, section: List[str]) -> dict:
+        exercises = []
+        exercise = {
+            'name': '',
+            'sets': [
+                {
+                    'weight': int,
+                    'reps': int
+                },
+                {
+                    'weight': int,
+                    'reps': int
+                },
+                {
+                    'weight': int,
+                    'reps': int
+                }
+            ]
+        }
+        for line in section:
+            logging.debug(f"Extracting line: {line}")
+            name = self._extract_exercise_name(line)
+            logging.debug(name)
+            # weight = self._extract_weight_from_name(line)
+            # reps = self._extract_reps(line)
+            
+
+    # def _extract_sections(self, sections: List[str]) -> dict:
+    #     sections = []
+    #     section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
+    #     for i, line in enumerate(sections):
+    #         logging.debug(f"Working on line: {line}")
+    #         if self._is_section_header(line):
+    #             if section['name'] is not None:
+    #                 sections.append(section)
+    #                 logging.debug(f"Finished section: {section}")
+    #                 section = {'name': None, 'exercises': [], 'rest': 0, 'time': 0, 'weight': 0}
+    #             section['name'] = line.split(':')[0]
+    #         elif 'rest' in line.lower():
+    #             section['rest'] = self._parse_rest_string(line)
+    #         else:
+    #             if section['name'] is not None:
+    #                 section['exercises'].append(line)
+    #             else:
+    #                 continue
+    #     sections.append(section)
+    #     return sections
 
     def _parse_rest_string(self, string: str) -> int:
         p = re.compile(self.patterns['rest'])
@@ -126,24 +167,27 @@ class WorkoutParser():
         return exercise_list
 
     def _extract_exercises(self, text: str):
-        print(f"Received: text: {text}")
+        logging.debug(f"Received text: {text}")
         if type(text) != str:
             raise ValueError(f"Got {type(text)} expected 'str'")
         exercises = []
         exercise = {'name': None, 'reps': [], 'weight': 0, 'time': 0}
 
         name, info = text.split(':')
-        print(f"Name: {name} - Info: {info}")
+        logging.debug(f"Name: {name} - Info: {info}")
+        if 'rest' in name.lower():
+            logging.debug(f"Extracting rest string: {info}")
+            exercise['rest'] = self._parse_rest_string(info)
         exercise['name'] = name.split('(')[0].strip()
         exercise_type = None
         if 'x' in info:
-            print(f"Reps type exercise")
+            logging.debug(f"Reps type exercise")
             reps = self._parse_reps_exercise(info)
             exercise['reps'] = reps
             try:
                 weight = [self._extract_weight_from_name(name)]
             except ValueError as e:
-                print(f"No weight to parse: {str(e)}")
+                logging.debug(f"No weight to parse: {str(e)}")
             else:
                 exercise['weight'] = weight
             exercises.append(exercise)
@@ -156,32 +200,33 @@ class WorkoutParser():
             exercise_type = 'time'
             weight = self._extract_weight_from_name(name)
             time = self._extract_time(info)
-            print(time)
+            logging.debug(time)
             exercise['weight'] = weight
             exercise['time'] = time
             exercises.append(exercise)
-        print(f"Returning exercises: {exercises}")
+        logging.debug(f"Returning exercises: {exercises}")
         return exercises
 
     def _extract_time(self, text):
+        logging.debug(f"Extracting time from: '{text}'")
         p = re.compile(self.patterns['exercise']['exercise_time'])
-        matches = p.match(text)
-        print(f"Time matches: {matches}")
+        matches = p.match(text.strip())
+        logging.debug(f"Time matches: {matches}")
         mins = int(matches.group(1))
         return mins * 60
 
     def _parse_reps_exercise(self, text: str):
         p = re.compile(self.patterns['exercise']['exercise_reps_only'])
         matches = p.findall(text)
-        print(f"Reps matches: {matches}")
+        logging.debug(f"Reps matches: {matches}")
         if not matches:
             raise ValueError(f"No match for {text}")
         reps = [int(_set) for _set in matches]
-        print(reps)
+        logging.debug(reps)
         return reps
 
     def _generate_negative(self, name: str, reps: str) -> Dict[str, Union[str, List[int]]]:
-        print(f"Reps: {reps}")
+        logging.debug(f"Reps: {reps}")
         p = re.compile(self.patterns['exercise']['negative_reps'])
         matches = p.findall(reps)
         neg_reps = [int(neg) for neg in matches]
@@ -208,7 +253,9 @@ class WorkoutParser():
 
 
 if __name__ == '__main__':
-    with open('data/20200803.txt') as f:
+    import logging
+    logging.basicConfig(level=logging.DEBUG, format="[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s")
+    with open('data/20220912.txt') as f:
         data = f.read()
     result = WorkoutParser(data).parse()
-    print(f"Result: {result}")
+    logging.debug(f"Result: {result}")

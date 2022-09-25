@@ -9,8 +9,8 @@ import pytest
 class TestWorkoutParser():
         
     full_workout_data = [
-        ('./data/20200803.txt', './data/20200803.json'),
-        # ('./data/20200814.txt', './data/20200814.json'),
+        # ('./data/20200803.txt', './data/20200803.json'),
+        ('./data/20200814.txt', './data/20200814.json'),
         # ('./data/recommended_routine.txt', './data/recommended_routine.json'),
         # ('./data/starting_strength_example_workout.txt', './data/starting_strength_example_workout.json'),
     ]

@@ -7,6 +7,7 @@ class Exercise():
         self.reps = input_dict.get('reps') or []
         self.weight = input_dict.get('weight') or 0
         self.time = input_dict.get('time') or 0
+        self.date = input_dict['date']
 
     @classmethod
     def to_dict(self):
@@ -15,4 +16,5 @@ class Exercise():
             'reps': self.reps,
             'weight': self.weight,
             'time': self.time,
+            'date': self.date
         }

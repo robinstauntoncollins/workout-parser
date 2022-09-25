@@ -1,7 +1,6 @@
 # MVP
 
-User will keep track of their workout in a text file (Google Keep for example) and when completed the user
-will upload that text file to the web app which will automatically parse and store the workout accurately.
+User will keep track of their workout in a text file (Google Keep for example) and when completed the user will upload that text file to the web app which will automatically parse and store the workout accurately.
 
 The app will then be able to keep track of the day, exercises, sets, reps etc of the user over time.
 
@@ -72,3 +71,10 @@ and clicks 'upload' to upload and store their workout.
 
 
 
+## Parsing text file
+
+### Rules
+
+* Each document starts with a date on first line in format: `%d %Mon %YYYY`
+* Each workout section starts with `<Section Name>:\n`
+* Within a section an exercise can be spread across multiple lines to denote the number of sets and will 
